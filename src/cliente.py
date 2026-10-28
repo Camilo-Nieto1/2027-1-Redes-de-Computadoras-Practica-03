@@ -8,7 +8,7 @@ from multiprocessing import Pool
 
 def iniciar_cliente(mac_address):
     """Crea un cliente con una dirección mac y busca al servidor."""
-    idc = "cliente:", mac_address
+    idc = "cliente: " + mac_address
     print(idc, "Inicia")
     cliente_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     cliente_sock.settimeout(5.0)
@@ -21,7 +21,13 @@ def iniciar_cliente(mac_address):
 
     while direccion is None:
         # Esperar DHCPOFFER , enviar DHCPREQUEST y esperar DHCPACK
-        data, addr = cliente_sock.recvfrom(1024)
+
+        try:
+            data, addr = cliente_sock.recvfrom(1024)
+        except (TimeoutError):
+            print(idc, "no recibió repuesta del Servidor")
+            return
+
         mensaje = json.loads(data.decode("utf-8"))
         print("cliente:", mac_address, "recibió", mensaje.get("type"))
 
@@ -46,6 +52,7 @@ def iniciar_cliente(mac_address):
             print(idc,
                   "obtuvo la direción", direccion,
                   "por", tiempo, "tiempo")
+
         else:
             continue
 
