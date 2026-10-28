@@ -64,6 +64,6 @@ if __name__ == "__main__":
         return ":".join(f"{b:02x}"
                         for b
                         in [random.randint(0, 255) for _ in range(6)])
-    macs_clientes = [_mac_address() for _ in range(4)]
+    macs_clientes = [_mac_address() for _ in range(3)]
     with Pool(processes=len(macs_clientes)) as procesos:
         procesos.map(iniciar_cliente, macs_clientes)
